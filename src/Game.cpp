@@ -3,6 +3,9 @@
 //
 
 #include "Game.h"
+#include <random>
+
+static std::mt19937 rng(std::random_device{}());
 
 unsigned int Game::getMinesCount() const
 {
@@ -80,8 +83,8 @@ void Game::startNewGame()
     }
 
     for (auto i = 0; i < this->_minesCount; i++) {
-        unsigned int h = rand() % this->_fieldHeight;
-        unsigned int w = rand() % this->_fieldWidth;
+        unsigned int h = std::uniform_int_distribution<unsigned int>(0, this->_fieldHeight - 1)(rng);
+        unsigned int w = std::uniform_int_distribution<unsigned int>(0, this->_fieldWidth - 1)(rng);
         if (this->_field[h][w].isMine()) {
             i--;
             continue;

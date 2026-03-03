@@ -32,9 +32,9 @@ std::string currentSize = "Small";
 Leaderboards generateDefaultLeaderboards()
 {
     Leaderboards leaderboards;
-    leaderboards.insert(std::pair<std::string, Leaderboard>(std::string("Small"), Leaderboard()));
-    leaderboards.insert(std::pair<std::string, Leaderboard>(std::string("Medium"), Leaderboard()));
-    leaderboards.insert(std::pair<std::string, Leaderboard>(std::string("Big"), Leaderboard()));
+    leaderboards.insert(std::pair(std::string("Small"), Leaderboard()));
+    leaderboards.insert(std::pair(std::string("Medium"), Leaderboard()));
+    leaderboards.insert(std::pair(std::string("Big"), Leaderboard()));
 
     return leaderboards;
 }
@@ -59,25 +59,25 @@ Leaderboards readLeaderboards()
     }
 
     Leaderboards leaderboards;
-    leaderboards.insert(std::pair<std::string, Leaderboard>(std::string("Small"), Leaderboard()));
-    leaderboards.insert(std::pair<std::string, Leaderboard>(std::string("Medium"), Leaderboard()));
-    leaderboards.insert(std::pair<std::string, Leaderboard>(std::string("Big"), Leaderboard()));
+    leaderboards.insert(std::pair(std::string("Small"), Leaderboard()));
+    leaderboards.insert(std::pair(std::string("Medium"), Leaderboard()));
+    leaderboards.insert(std::pair(std::string("Big"), Leaderboard()));
 
-    auto small = jsonData.at("Small").get<std::vector<nlohmann::json>>();
+    auto small = jsonData.at("Small").get<std::vector<nlohmann::json> >();
     for (const auto& it : small) {
         leaderboards["Small"].insert(LeaderboardItem(
             it.at("time").get<int>(),
             it.at("name").get<std::string>()
         ));
     }
-    auto medium = jsonData.at("Medium").get<std::vector<nlohmann::json>>();
+    auto medium = jsonData.at("Medium").get<std::vector<nlohmann::json> >();
     for (const auto& it : medium) {
         leaderboards["Medium"].insert(LeaderboardItem(
             it.at("time").get<int>(),
             it.at("name").get<std::string>()
         ));
     }
-    auto big = jsonData.at("Big").get<std::vector<nlohmann::json>>();
+    auto big = jsonData.at("Big").get<std::vector<nlohmann::json> >();
     for (const auto& it : big) {
         leaderboards["Big"].insert(LeaderboardItem(
             it.at("time").get<int>(),
@@ -97,26 +97,26 @@ void saveLeaderboards(Leaderboards leaderboards)
 
     nlohmann::json jsonData;
     jsonData["Small"] = std::vector<nlohmann::json>();
-    for (const auto & it : leaderboards["Small"]) {
+    for (const auto& it : leaderboards["Small"]) {
         nlohmann::json item = {
-            {"name", it.name},
-            {"time", it.time}
+            { "name", it.name },
+            { "time", it.time }
         };
         jsonData["Small"].push_back(item);
     }
     jsonData["Medium"] = std::vector<nlohmann::json>();
-    for (const auto & it : leaderboards["Medium"]) {
+    for (const auto& it : leaderboards["Medium"]) {
         nlohmann::json item = {
-            {"name", it.name},
-            {"time", it.time}
+            { "name", it.name },
+            { "time", it.time }
         };
         jsonData["Medium"].push_back(item);
     }
     jsonData["Big"] = std::vector<nlohmann::json>();
-    for (const auto & it : leaderboards["Big"]) {
+    for (const auto& it : leaderboards["Big"]) {
         nlohmann::json item = {
-            {"name", it.name},
-            {"time", it.time}
+            { "name", it.name },
+            { "time", it.time }
         };
         jsonData["Big"].push_back(item);
     }
@@ -127,7 +127,6 @@ void saveLeaderboards(Leaderboards leaderboards)
 // Main code
 int main(int, char**)
 {
-    srand(static_cast<unsigned int>(time(nullptr)));
     AppState appState(10, 8, 8);
 
     // Setup SDL
@@ -138,14 +137,14 @@ int main(int, char**)
 
     SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
 
-    auto window_flags = (SDL_WindowFlags)(SDL_WINDOW_ALLOW_HIGHDPI);
+    auto window_flags = SDL_WINDOW_ALLOW_HIGHDPI;
 
     SDL_Window* window = SDL_CreateWindow(
         "Minesweeper",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        (int)appState.getWindowWidth(),
-        (int)appState.getWindowHeight(),
+        static_cast<int>(appState.getWindowWidth()),
+        static_cast<int>(appState.getWindowHeight()),
         window_flags
     );
     if (window == nullptr) {
@@ -163,8 +162,8 @@ int main(int, char**)
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     (void)io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
     // Setup Dear ImGui style
     ImGui::StyleColorsDark();
@@ -190,7 +189,7 @@ int main(int, char**)
     auto src_seven = SDL_Rect(16 * 2, 16 * 2, 16, 16);
     auto src_eight = SDL_Rect(16 * 3, 16 * 2, 16, 16);
     auto src_mine = SDL_Rect(16 * 4, 16 * 2, 16, 16);
-    auto dst = SDL_Rect(0, 0, (int)appState.getFieldCellSize(), (int)appState.getFieldCellSize());
+    auto dst = SDL_Rect(0, 0, static_cast<int>(appState.getFieldCellSize()), static_cast<int>(appState.getFieldCellSize()));
 
     Leaderboards leaderboards;
     try {
@@ -237,8 +236,8 @@ int main(int, char**)
             }
             if (
                 event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE
-                    && event.window.windowID == SDL_GetWindowID(window)
-                ) {
+                && event.window.windowID == SDL_GetWindowID(window)
+            ) {
                 quit = true;
             }
             if (event.type == SDL_KEYDOWN) {
@@ -262,11 +261,11 @@ int main(int, char**)
                 if (event.button.button == SDL_BUTTON_LEFT) {
                     if (
                         game->isFinished()
-                            && event.button.x >= appState.getRestartButtonX()
-                            && event.button.x <= appState.getRestartButtonX() + appState.getRestartButtonSize()
-                            && event.button.y >= appState.getRestartButtonY()
-                            && event.button.y <= appState.getRestartButtonY() + appState.getRestartButtonSize()
-                        ) {
+                        && event.button.x >= appState.getRestartButtonX()
+                        && event.button.x <= appState.getRestartButtonX() + appState.getRestartButtonSize()
+                        && event.button.y >= appState.getRestartButtonY()
+                        && event.button.y <= appState.getRestartButtonY() + appState.getRestartButtonSize()
+                    ) {
                         game->startNewGame();
                         continue;
                     }
@@ -284,7 +283,7 @@ int main(int, char**)
                         }
 
                         auto lastLeader = --leaderboards[currentSize].end();
-                        if (lastLeader->time > (int)game->getTime()) {
+                        if (lastLeader->time > static_cast<int>(game->getTime())) {
                             showAddToLeaderboard = true;
                         }
                     }
@@ -327,19 +326,19 @@ int main(int, char**)
                 if (ImGui::MenuItem("Small")) {
                     currentSize = "Small";
                     appState.recalcWindowParams(10, 8, 8);
-                    SDL_SetWindowSize(window, (int)appState.getWindowWidth(), (int)appState.getWindowHeight());
+                    SDL_SetWindowSize(window, static_cast<int>(appState.getWindowWidth()), static_cast<int>(appState.getWindowHeight()));
                     game->startNewGame();
                 }
                 if (ImGui::MenuItem("Medium")) {
                     currentSize = "Medium";
                     appState.recalcWindowParams(40, 16, 16);
-                    SDL_SetWindowSize(window, (int)appState.getWindowWidth(), (int)appState.getWindowHeight());
+                    SDL_SetWindowSize(window, static_cast<int>(appState.getWindowWidth()), static_cast<int>(appState.getWindowHeight()));
                     game->startNewGame();
                 }
                 if (ImGui::MenuItem("Big")) {
                     currentSize = "Big";
                     appState.recalcWindowParams(99, 30, 16);
-                    SDL_SetWindowSize(window, (int)appState.getWindowWidth(), (int)appState.getWindowHeight());
+                    SDL_SetWindowSize(window, static_cast<int>(appState.getWindowWidth()), static_cast<int>(appState.getWindowHeight()));
                     game->startNewGame();
                 }
                 ImGui::EndMenu();
@@ -358,7 +357,8 @@ int main(int, char**)
 
         ImGui::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
         if (ImGui::BeginPopupModal("Add To Leaderboard", nullptr, ImGuiChildFlags_AlwaysAutoResize)) {
-            static char buf[32] = ""; ImGui::InputText("Nickname", buf, 32);
+            static char buf[32] = "";
+            ImGui::InputText("Nickname", buf, 32);
             ImGui::Separator();
             if (ImGui::Button("Cancel", ImVec2(60.0f, 0))) {
                 showAddToLeaderboard = false;
@@ -370,7 +370,7 @@ int main(int, char**)
                 if (nickname.empty()) {
                     nickname = "Anonym";
                 }
-                leaderboards[currentSize].insert(LeaderboardItem((int)game->getTime(), nickname));
+                leaderboards[currentSize].insert(LeaderboardItem(static_cast<int>(game->getTime()), nickname));
                 if (leaderboards[currentSize].size() > 10) {
                     auto lastLeader = --leaderboards[currentSize].end();
                     leaderboards[currentSize].erase(lastLeader);
@@ -435,8 +435,8 @@ int main(int, char**)
         std::string text = flagCountText.append("/").append(minesCountText).append(" | ").append(time).append("s");
         ImGui::SameLine(
             ImGui::GetWindowWidth()
-                - ImGui::CalcTextSize(text.c_str()).x
-                - ImGui::GetStyle().ItemSpacing.x
+            - ImGui::CalcTextSize(text.c_str()).x
+            - ImGui::GetStyle().ItemSpacing.x
         );
         ImGui::Text("%s", text.c_str());
         ImGui::EndMainMenuBar();
@@ -447,12 +447,12 @@ int main(int, char**)
 
         SDL_RenderClear(renderer);
 
-        dst.w = (int)appState.getFieldCellSize();
-        dst.h = (int)appState.getFieldCellSize();
+        dst.w = static_cast<int>(appState.getFieldCellSize());
+        dst.h = static_cast<int>(appState.getFieldCellSize());
         for (int i = 0; i < game->getFieldHeight(); i++) {
             for (int j = 0; j < game->getFieldWidth(); j++) {
-                dst.x = j * (int)appState.getFieldCellSize();
-                dst.y = i * (int)appState.getFieldCellSize() + (int)appState.getMenuHeight();
+                dst.x = j * static_cast<int>(appState.getFieldCellSize());
+                dst.y = i * static_cast<int>(appState.getFieldCellSize()) + static_cast<int>(appState.getMenuHeight());
                 auto cell = game->getCell(i, j);
                 if (cell->isFlagged()) {
                     SDL_RenderCopy(renderer, texture, &src_flagged, &dst);
@@ -484,10 +484,10 @@ int main(int, char**)
             }
         }
 
-        dst.x = (int)appState.getRestartButtonX();
-        dst.y = (int)appState.getRestartButtonY();
-        dst.w = (int)appState.getRestartButtonSize();
-        dst.h = (int)appState.getRestartButtonSize();
+        dst.x = static_cast<int>(appState.getRestartButtonX());
+        dst.y = static_cast<int>(appState.getRestartButtonY());
+        dst.w = static_cast<int>(appState.getRestartButtonSize());
+        dst.h = static_cast<int>(appState.getRestartButtonSize());
         if (game->isFailed()) {
             SDL_RenderCopy(renderer, texture, &src_dead, &dst);
         } else if (game->isSuccess()) {
